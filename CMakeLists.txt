@@ -13,3 +13,9 @@ add_executable(client client.cpp)
 add_executable(server server.cpp)
 target_link_libraries(client PUBLIC snap7)
 target_link_libraries(server PUBLIC snap7)
+
+INSTALL ( TARGETS client
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION bin
+    LIBRARY DESTINATION bin
+)

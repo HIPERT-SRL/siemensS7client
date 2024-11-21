@@ -6,12 +6,45 @@
 #define SLOT 2
 #define DB_NUMBER 1  // Numero del blocco dati (Data Block)
 
+bool Check(TS7Client &Client, int Result, const char * function)
+{
+    printf("\n");
+    printf("+-----------------------------------------------------\n");
+    printf("| %s\n",function);
+    printf("+-----------------------------------------------------\n");
+    if (Result==0) {
+        printf("| Result         : OK\n");
+        printf("| Execution time : %d ms\n",Client.ExecTime());
+        printf("+-----------------------------------------------------\n");
+        // ok++;
+    }
+    else {
+        printf("| ERROR !!! \n");
+        if (Result<0)
+            printf("| Library Error (-1)\n");
+        else
+            printf("| %s\n",CliErrorText(Result).c_str());
+        printf("+-----------------------------------------------------\n");
+        // ko++;
+    }
+    return Result==0;
+}
+void S7API CliCompletion(void *usrPtr, int opCode, int opResult)
+{
+}
+
 int main() {
     std::cout << "Client" << std::endl;
     TS7Client Client;
+    Client->SetAsCallback(CliCompletion,NULL);
 
-    int status = Client->ConnectTo(PLC_IP, RACK, SLOT);
-    if (result == 0) {
+    int status = Client.ConnectTo(PLC_IP, RACK, SLOT);
+    if (Check(Client, status,"UNIT Connection")) {
+          printf("  Connected to   : %s (Rack=%d, Slot=%d)\n",PLC_IP,RACK,SLOT);
+          printf("  PDU Requested  : %d bytes\n",Client.PDURequested());
+          printf("  PDU Negotiated : %d bytes\n",Client.PDULength());
+    };
+    if (status == 0) {
         std::cout << "Connesso al PLC con successo." << std::endl;
 
         // // Scrittura di un valore nel PLC (ad esempio, un intero)
@@ -41,7 +74,7 @@ int main() {
         // // Disconnessione dal PLC
         // client.Disconnect();
     } else {
-        std::cerr << "Impossibile connettersi al PLC. Codice errore: " << result << std::endl;
+        std::cerr << "Impossibile connettersi al PLC. Codice errore: " << status << std::endl;
     }
 
     std::cout << status << std::endl;
