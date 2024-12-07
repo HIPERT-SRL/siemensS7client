@@ -76,11 +76,6 @@ ELSEIF ( WIN32 )
     LIST ( APPEND DEPENDENCIES ws2_32 winmm )
 ENDIF ()
 
-# includes
-INCLUDE_DIRECTORIES ( core/ )
-INCLUDE_DIRECTORIES ( sys/ )
-INCLUDE_DIRECTORIES ( lib/ )
-
 # remove dumb warnings
 IF ( MSVC )
     ADD_DEFINITIONS ( -D_CRT_SECURE_NO_WARNINGS )
@@ -93,7 +88,7 @@ ADD_LIBRARY ( snap7 ${LIBRARY_TYPE}
     ${sys_SOURCES}  ${sys_HEADERS}
     ${lib_SOURCES}  ${lib_HEADERS}  ${lib_DEFINITIONS}
 )
-target_include_directories(snap7 PUBLIC examples/cpp)
+target_include_directories(snap7 PUBLIC examples/cpp core/ sys/ lib/)
 TARGET_LINK_LIBRARIES ( snap7 ${CMAKE_THREAD_LIBS_INIT} ${DEPENDENCIES} )
 
 # install library and headers
